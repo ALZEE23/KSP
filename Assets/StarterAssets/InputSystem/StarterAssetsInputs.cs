@@ -10,6 +10,7 @@ namespace StarterAssets
 		[Header("Character Input Values")]
 		public Vector2 move;
 		public Vector2 look;
+		public bool dash;
 		public bool jump;
 		public bool sprint;
 
@@ -43,6 +44,10 @@ namespace StarterAssets
 		{
 			SprintInput(value.isPressed);
 		}
+
+		public void OnDash(InputValue value){
+			DashInput(value.isPressed);
+		}
 #endif
 
 
@@ -64,6 +69,10 @@ namespace StarterAssets
 		public void SprintInput(bool newSprintState)
 		{
 			sprint = newSprintState;
+		}
+
+		public void DashInput(bool newDashState){
+			dash = newDashState;
 		}
 
 		private void OnApplicationFocus(bool hasFocus)

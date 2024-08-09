@@ -1,6 +1,8 @@
-﻿ using UnityEngine;
+﻿using System.Collections;
+using UnityEngine;
 #if ENABLE_INPUT_SYSTEM 
 using UnityEngine.InputSystem;
+using UnityEngine.SocialPlatforms;
 #endif
 
 /* Note: animations are called via the controller for both the character and capsule using animator null checks
@@ -20,6 +22,12 @@ namespace StarterAssets
 
         [Tooltip("Sprint speed of the character in m/s")]
         public float SprintSpeed = 5.335f;
+
+        [Tooltip("Dash speed of the character in m/s")]
+        public float DashSpeed;
+
+        [Tooltip("Dash Time of the character in dash")]
+        public float DashTime ;
 
         [Tooltip("How fast the character turns to face movement direction")]
         [Range(0.0f, 0.3f)]
@@ -109,6 +117,7 @@ namespace StarterAssets
         private const float _threshold = 0.01f;
 
         private bool _hasAnimator;
+        public Vector3 moveDir;
 
         private bool IsCurrentDeviceMouse
         {
@@ -159,6 +168,7 @@ namespace StarterAssets
             JumpAndGravity();
             GroundedCheck();
             Move();
+            Dash();
         }
 
         private void LateUpdate()
@@ -279,6 +289,30 @@ namespace StarterAssets
             }
         }
 
+        private void Dash(){
+            if (Grounded){
+
+                
+
+                if (_input.dash){
+                    StartCoroutine(DashMove());
+                }
+
+                _input.dash = false;
+            }
+        }
+
+        IEnumerator DashMove(){
+            float startTime = Time.time;
+                
+            while(Time.time < startTime + DashTime){
+                _controller.Move(moveDir * DashSpeed * Time.deltaTime);
+            }
+
+            yield return null;
+
+        }
+
         private void JumpAndGravity()
         {
             if (Grounded)
@@ -387,6 +421,18 @@ namespace StarterAssets
             {
                 AudioSource.PlayClipAtPoint(LandingAudioClip, transform.TransformPoint(_controller.center), FootstepAudioVolume);
             }
+        }
+
+        private void Attack(){
+
+        }
+
+        private void SelectedCombo(){
+            
+        }
+
+        IEnumerator InputCombo(float time){
+            yield return new WaitForSeconds(time);
         }
     }
 }
