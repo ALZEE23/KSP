@@ -306,7 +306,11 @@ namespace StarterAssets
         private IEnumerator PerformDash()
         {
             isDashing = true;
-            _dashDirection = transform.forward; // Menggunakan arah depan karakter sebagai arah dash
+            _dashDirection = transform.forward; 
+            if(isDashing)
+            {
+                
+            }
             float startTime = Time.time;
 
             while (Time.time < startTime + dashDuration)
@@ -431,8 +435,9 @@ namespace StarterAssets
             }
         }
 
-        private void Attack(){
-
+        private void Attack()
+        {
+            
         }
 
         private void SelectedCombo(){
