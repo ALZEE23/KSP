@@ -106,6 +106,12 @@ namespace StarterAssets
         private int _animIDFreeFall;
         private int _animIDMotionSpeed;
 
+
+        private Vector3 _dashDirection;
+        public float dashSpeed = 20f;
+        public float dashDuration = 0.2f;
+        private bool isDashing = false;
+
 #if ENABLE_INPUT_SYSTEM 
         private PlayerInput _playerInput;
 #endif
@@ -289,29 +295,31 @@ namespace StarterAssets
             }
         }
 
-        private void Dash(){
-            if (Grounded){
-
-                
-
-                if (_input.dash){
-                    StartCoroutine(DashMove());
-                }
-
-                _input.dash = false;
+        private void Dash()
+        {
+            if (Grounded && _input.dash && !isDashing)
+            {
+                StartCoroutine(PerformDash());
             }
         }
 
-        IEnumerator DashMove(){
+        private IEnumerator PerformDash()
+        {
+            isDashing = true;
+            _dashDirection = transform.forward; // Menggunakan arah depan karakter sebagai arah dash
             float startTime = Time.time;
-                
-            while(Time.time < startTime + DashTime){
-                _controller.Move(moveDir * DashSpeed * Time.deltaTime);
+
+            while (Time.time < startTime + dashDuration)
+            {
+                _controller.Move(_dashDirection * dashSpeed * Time.deltaTime);
+                yield return null;
             }
 
-            yield return null;
-
+            isDashing = false;
+            _input.dash = false;
         }
+
+
 
         private void JumpAndGravity()
         {
