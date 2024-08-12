@@ -14,7 +14,7 @@ namespace StarterAssets
 		public bool jump;
 		public bool sprint;
 		public bool attack1;
-		public bool attack2;	
+		public bool attack2;
 
 		[Header("Movement Settings")]
 		public bool analogMovement;
@@ -31,7 +31,7 @@ namespace StarterAssets
 
 		public void OnLook(InputValue value)
 		{
-			if(cursorInputForLook)
+			if (cursorInputForLook)
 			{
 				LookInput(value.Get<Vector2>());
 			}
@@ -47,34 +47,27 @@ namespace StarterAssets
 			SprintInput(value.isPressed);
 		}
 
-		public void OnDash(InputValue value){
+		public void OnDash(InputValue value)
+		{
 			DashInput(value.isPressed);
 		}
 
 		public void OnAttack1(InputValue value)
 		{
-			AttackInput1(value.isPressed);
+			Attack1Input(value.isPressed);
 		}
 
 		public void OnAttack2(InputValue value)
 		{
-			AttackInput2(value.isPressed);
+			Attack2Input(value.isPressed);
 		}
 #endif
-		public void AttackInput1(bool newAttack1State)
-		{
-			attack1 = newAttack1State;
-		}
 
-		public void AttackInput2(bool newAttack2State)
-		{
-			attack2 = newAttack2State;
-		}
 
 		public void MoveInput(Vector2 newMoveDirection)
 		{
 			move = newMoveDirection;
-		} 
+		}
 
 		public void LookInput(Vector2 newLookDirection)
 		{
@@ -91,8 +84,18 @@ namespace StarterAssets
 			sprint = newSprintState;
 		}
 
-		public void DashInput(bool newDashState){
+		public void DashInput(bool newDashState)
+		{
 			dash = newDashState;
+		}
+		public void Attack1Input(bool newAttack1State)
+		{
+			attack1 = newAttack1State;
+		}
+
+		public void Attack2Input(bool newAttack2State)
+		{
+			attack2 = newAttack2State;
 		}
 
 		private void OnApplicationFocus(bool hasFocus)
@@ -105,5 +108,5 @@ namespace StarterAssets
 			Cursor.lockState = newState ? CursorLockMode.Locked : CursorLockMode.None;
 		}
 	}
-	
+
 }

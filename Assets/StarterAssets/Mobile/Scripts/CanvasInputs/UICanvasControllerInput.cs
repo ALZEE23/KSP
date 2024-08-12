@@ -20,12 +20,12 @@ namespace StarterAssets
 
         public void VirtualJumpInput(bool virtualJumpState)
         {
-            starterAssetsInputs.JumpInput(virtualJumpState);
+            starterAssetsInputs.Attack1Input(virtualJumpState);
         }
 
         public void VirtualSprintInput(bool virtualSprintState)
-        {
-            starterAssetsInputs.SprintInput(virtualSprintState);
+        {   
+            starterAssetsInputs.DashInput(virtualSprintState);
         }
         
     }

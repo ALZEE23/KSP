@@ -20,6 +20,8 @@ namespace StarterAssets
         [Tooltip("Move speed of the character in m/s")]
         public float MoveSpeed = 2.0f;
 
+        public int health = 20;
+
         [Tooltip("Sprint speed of the character in m/s")]
         public float SprintSpeed = 5.335f;
 
@@ -31,14 +33,14 @@ namespace StarterAssets
 
         [Tooltip("How fast the character turns to face movement direction")]
         [Range(0.0f, 0.3f)]
-        public float RotationSmoothTime = 0.12f;
+        public float RotationSmoothTime = 0.0f;
 
         [Tooltip("Acceleration and deceleration")]
         public float SpeedChangeRate = 10.0f;
 
         public AudioClip LandingAudioClip;
         public AudioClip[] FootstepAudioClips;
-        [Range(0, 1)] public float FootstepAudioVolume = 0.5f;
+        [Range(0, 10)] public float FootstepAudioVolume = 0.5f;
 
         [Space(10)]
         [Tooltip("The height the player can jump")]
@@ -124,6 +126,8 @@ namespace StarterAssets
 
         private bool _hasAnimator;
         public Vector3 moveDir;
+        private InputAction moveAction;
+
 
         private bool IsCurrentDeviceMouse
         {
@@ -165,6 +169,7 @@ namespace StarterAssets
             // reset our timeouts on start
             _jumpTimeoutDelta = JumpTimeout;
             _fallTimeoutDelta = FallTimeout;
+            moveAction = _playerInput.actions["Move"];
         }
 
         private void Update()
@@ -177,18 +182,16 @@ namespace StarterAssets
             Dash();
         }
 
-        private void LateUpdate()
-        {
-            CameraRotation();
-        }
+        // private void LateUpdate()
+        // {
+        //     CameraRotation();
+        // }
 
         private void AssignAnimationIDs()
         {
             _animIDSpeed = Animator.StringToHash("Speed");
-            _animIDGrounded = Animator.StringToHash("Grounded");
-            _animIDJump = Animator.StringToHash("Jump");
-            _animIDFreeFall = Animator.StringToHash("FreeFall");
             _animIDMotionSpeed = Animator.StringToHash("MotionSpeed");
+            
         }
 
         private void GroundedCheck()
@@ -206,26 +209,26 @@ namespace StarterAssets
             }
         }
 
-        private void CameraRotation()
-        {
-            // if there is an input and camera position is not fixed
-            if (_input.look.sqrMagnitude >= _threshold && !LockCameraPosition)
-            {
-                //Don't multiply mouse input by Time.deltaTime;
-                float deltaTimeMultiplier = IsCurrentDeviceMouse ? 1.0f : Time.deltaTime;
+        // private void CameraRotation()
+        // {
+        //     // if there is an input and camera position is not fixed
+        //     if (_input.look.sqrMagnitude >= _threshold && !LockCameraPosition)
+        //     {
+        //         //Don't multiply mouse input by Time.deltaTime;
+        //         float deltaTimeMultiplier = IsCurrentDeviceMouse ? 1.0f : Time.deltaTime;
 
-                _cinemachineTargetYaw += _input.look.x * deltaTimeMultiplier;
-                _cinemachineTargetPitch += _input.look.y * deltaTimeMultiplier;
-            }
+        //         _cinemachineTargetYaw += _input.look.x * deltaTimeMultiplier;
+        //         _cinemachineTargetPitch += _input.look.y * deltaTimeMultiplier;
+        //     }
 
-            // clamp our rotations so our values are limited 360 degrees
-            _cinemachineTargetYaw = ClampAngle(_cinemachineTargetYaw, float.MinValue, float.MaxValue);
-            _cinemachineTargetPitch = ClampAngle(_cinemachineTargetPitch, BottomClamp, TopClamp);
+        //     // clamp our rotations so our values are limited 360 degrees
+        //     _cinemachineTargetYaw = ClampAngle(_cinemachineTargetYaw, float.MinValue, float.MaxValue);
+        //     _cinemachineTargetPitch = ClampAngle(_cinemachineTargetPitch, BottomClamp, TopClamp);
 
-            // Cinemachine will follow this target
-            CinemachineCameraTarget.transform.rotation = Quaternion.Euler(_cinemachineTargetPitch + CameraAngleOverride,
-                _cinemachineTargetYaw, 0.0f);
-        }
+        //     // Cinemachine will follow this target
+        //     CinemachineCameraTarget.transform.rotation = Quaternion.Euler(_cinemachineTargetPitch + CameraAngleOverride,
+        //         _cinemachineTargetYaw, 0.0f);
+        // }
 
         private void Move()
         {
@@ -306,10 +309,12 @@ namespace StarterAssets
         private IEnumerator PerformDash()
         {
             isDashing = true;
+            moveAction.Disable();
+
             _dashDirection = transform.forward; 
             if(isDashing)
             {
-                
+                _animator.SetTrigger("dash");
             }
             float startTime = Time.time;
 
@@ -319,8 +324,10 @@ namespace StarterAssets
                 yield return null;
             }
 
+            moveAction.Enable();
             isDashing = false;
             _input.dash = false;
+            _animator.ResetTrigger("dash");
         }
 
 
